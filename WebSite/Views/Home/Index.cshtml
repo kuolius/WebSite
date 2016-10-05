@@ -1,0 +1,17 @@
+﻿
+<div id="dailydeal">
+    @Ajax.ActionLink("Show Daily Deal", "DailyDeal", "Home", new AjaxOptions { UpdateTargetId = "dailydeal", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" }, new { @class = "btn btn-primary" })
+</div>
+
+<div class="panel-body">
+    @using (Ajax.BeginForm("SearchResults", "Home", new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "Get", OnFailure = "searchFailed", LoadingElementId = "ajax-loader", UpdateTargetId = "searchresults" }))
+    {
+
+        <input type="text" name="q" />
+        <input type="submit" value="search" />
+        <img id="ajax-loader" src="@Url.Content("~/Images/ajax-loader.gif")" style="display:none" />
+        
+     }
+    <div id="searchresults"></div>
+
+    </div>

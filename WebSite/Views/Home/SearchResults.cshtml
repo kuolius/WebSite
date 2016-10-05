@@ -1,0 +1,13 @@
+﻿@model IEnumerable<WebSite.Models.Suknele>
+
+
+<div id="searchresults">
+    <ul>
+        @foreach(var suknele in Model)
+        {
+            <li>
+                @suknele.name
+            </li>
+        }
+    </ul>
+</div>
