@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using WebSite.Models;
+using PagedList;
 
 namespace WebSite.Controllers
 {
@@ -17,9 +18,49 @@ namespace WebSite.Controllers
         
 
         // GET: Sukneles
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder,string currentFilter,string searchString,int? page)
         {
-            return View(db.Sukneles.ToList());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.PriceSortParm = sortOrder == "price" ? "price_desc" : "price";
+
+            if(searchString!=null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var sukneles = db.Sukneles.Select(s=>s);
+
+            if(!String.IsNullOrEmpty(searchString))
+            {
+                sukneles = db.Sukneles.Where(s => s.name.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            switch(sortOrder)
+            {
+                case "name_desc":
+                    sukneles = sukneles.OrderByDescending(s => s.name);
+                    break;
+                case "price":
+                    sukneles = sukneles.OrderBy(s => s.price);
+                    break;
+                case "price_desc":
+                    sukneles = sukneles.OrderByDescending(s => s.price);
+                    break;
+                default:
+                    sukneles = sukneles.OrderBy(s => s.name);
+                    break;
+            }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+
+            return View(sukneles.ToPagedList(pageNumber,pageSize));
         }
 
         // GET: Sukneles/Details/5

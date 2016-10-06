@@ -1,27 +1,38 @@
-﻿@model IEnumerable<WebSite.Models.Suknele>
+﻿@model PagedList.IPagedList<WebSite.Models.Suknele>
+@using PagedList.Mvc;
 
-@{
-    ViewBag.Title = "Index";
-}
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css"/>
 
-<h2>Index</h2>
+<h2>Sukneles</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+
+@using (Html.BeginForm("Index","Sukneles",FormMethod.Get))
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString",ViewBag.CurrentFilter as string)
+        <input class="btn btn-default" type="submit" value="search"/>
+    </p>
+}
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.name)
+            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm,currentFilter=ViewBag.CurrentFilter})
+
+            
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.genger)
+            @Html.Label("Genger")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.price)
+            @Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.age)
+            @Html.Label("Age")
         </th>
         <th></th>
     </tr>
@@ -49,3 +60,8 @@
 }
 
 </table>
+
+<br />
+Page @(Model.PageCount<Model.PageNumber?0:Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page=>Url.Action("Index",new { page,sortOrder=ViewBag.CurrentSort, currentFilter=ViewBag.CurrentFilter})) 
